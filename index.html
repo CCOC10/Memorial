@@ -43,7 +43,14 @@
       width: 100%; height: 100%;
       object-fit: cover;
       object-position: center top;
-      filter: brightness(0.5);
+      filter: brightness(0.7);
+      transform-origin: center top;
+      animation: heroZoom 10s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1.1); }
+      to   { transform: scale(1); }
     }
 
     .hero-overlay {
@@ -51,10 +58,10 @@
       inset: 0;
       background: linear-gradient(
         to bottom,
-        rgba(0,0,0,0.05)   0%,
-        rgba(0,0,0,0.0)    20%,
-        rgba(0,0,0,0.2)    48%,
-        rgba(14,14,14,0.82) 74%,
+        rgba(0,0,0,0.0)    0%,
+        rgba(0,0,0,0.0)    25%,
+        rgba(0,0,0,0.15)   50%,
+        rgba(14,14,14,0.7) 72%,
         rgba(14,14,14,1)   100%
       );
     }
@@ -83,7 +90,7 @@
 
     /* "กำหนดการ" label */
     .hero-label {
-      font-size: 19px;
+      font-size: 32px;
       letter-spacing: 4px;
       color: var(--gold);
       font-weight: 300;
@@ -94,7 +101,7 @@
 
     /* Ceremony subtitle */
     .hero-ceremony {
-      font-size: clamp(17px, 3.2vw, 22px);
+      font-size: clamp(20px, 4vw, 30px);
       letter-spacing: 0.5px;
       color: var(--text-muted);
       font-weight: 300;
@@ -115,8 +122,8 @@
 
     /* Gold rule under name */
     .hero-rule {
-      width: 80px;
-      height: 1px;
+      width: 200px;
+      height: 2px;
       background: linear-gradient(90deg, transparent, var(--gold), transparent);
       margin: 20px auto 18px;
       opacity: 0;
@@ -125,7 +132,7 @@
 
     /* Location — readable */
     .hero-location {
-      font-size: clamp(14px, 2.2vw, 16px);
+      font-size: clamp(17px, 2.6vw, 22px);
       color: var(--text-muted);
       line-height: 1.9;
       opacity: 0;
@@ -482,7 +489,7 @@
 
     <div class="hero-content">
       <p class="hero-label">กำหนดการ</p>
-      <p class="hero-ceremony"><span style="display:inline-block">พิธีสวดพระอภิธรรม</span><span style="display:inline-block">และพิธีพระราชทานเพลิงศพ</span></p>
+      <p class="hero-ceremony"><span style="display:inline-block">พิธีสวดพระอภิธรรม</span><span style="display:inline-block">และพิธีพระราชทานเพลิงศพ (เป็นกรณีพิเศษ)</span></p>
       <h1 class="hero-name">คุณพ่อทม พลายละหาร</h1>
       <div class="hero-rule"></div>
       <p class="hero-location">
@@ -604,8 +611,12 @@
           <div class="tl-date-th">14 พฤษภาคม 2569</div>
           <div class="tl-events">
             <div class="tl-event">
-              <span class="tl-time">16.00</span>
-              <span class="tl-label">พิธีพระราชทานเพลิงศพ</span>
+              <span class="tl-time">13.00</span>
+              <span class="tl-label">พิธีสวดมาติกาบังสุกุล</span>
+            </div>
+            <div class="tl-event">
+              <span class="tl-time">15.00</span>
+              <span class="tl-label">พิธีพระราชทานเพลิงศพ<br><span style="font-size:13px;color:var(--text-muted);font-weight:300;">ณ เมรุ วัดหน้าพระบรมธาตุฯ</span></span>
             </div>
           </div>
         </div>
