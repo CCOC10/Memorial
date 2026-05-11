@@ -497,12 +497,38 @@
       50%       { opacity: 0.2; transform: scaleY(0.6); }
     }
 
-    /* ── RESPONSIVE ── */
+    /* ── RESPONSIVE MOBILE ── */
     @media (max-width: 480px) {
       .tl-item { grid-template-columns: 46px 22px 1fr; }
       .tl-num  { font-size: 26px; }
       .venue   { flex-direction: column; align-items: flex-start; }
       .map-btn { width: 100%; justify-content: center; }
+    }
+
+    /* ── DESKTOP / IPAD LANDSCAPE — SPLIT LAYOUT ── */
+    @media (min-width: 900px) {
+      body {
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .hero {
+        width: 50%;
+        height: 100vh;
+        min-height: unset;
+        flex-shrink: 0;
+      }
+
+      .content-wrap {
+        flex: 1;
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border-left: 1px solid var(--line);
+      }
+
+      .scroll-cue { display: none; }
     }
   </style>
 </head>
