@@ -656,7 +656,9 @@
     // Auto-fit hero name to full width on one line
     function fitHeroName() {
       const el = document.querySelector('.hero-name');
-      const pw = el.parentElement.clientWidth;
+      const parent = el.parentElement;
+      const cs = getComputedStyle(parent);
+      const pw = parent.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
       el.style.fontSize = '120px';
       while (el.scrollWidth > pw && parseFloat(el.style.fontSize) > 20) {
         el.style.fontSize = (parseFloat(el.style.fontSize) - 1) + 'px';
