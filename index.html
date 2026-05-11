@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คุณพ่อทม พลายละหาร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,200;0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --white: #f0ece6;
+      --gold: #C9A84C;
+      --gold-dim: rgba(201,168,76,0.14);
+      --gold-muted: rgba(201,168,76,0.55);
+      --line: rgba(201,168,76,0.18);
+      --text-muted: rgba(240,236,230,0.52);
+    }
+
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Prompt', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      height: 100svh;
+      min-height: 580px;
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: brightness(0.5);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.05)   0%,
+        rgba(0,0,0,0.0)    20%,
+        rgba(0,0,0,0.2)    48%,
+        rgba(14,14,14,0.82) 74%,
+        rgba(14,14,14,1)   100%
+      );
+    }
+
+    /* Subtle warm glow from bottom */
+    .hero-glow {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse at center bottom,
+        rgba(201,168,76,0.07) 0%,
+        transparent 70%
+      );
+      pointer-events: none;
+    }
+
+    /* Bottom content block */
+    .hero-content {
+      position: absolute;
+      bottom: 56px;
+      left: 0; right: 0;
+      text-align: center;
+      padding: 0 32px;
+    }
+
+    /* "กำหนดการ" label */
+    .hero-label {
+      font-size: 19px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      font-weight: 300;
+      margin-bottom: 10px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.42s forwards;
+    }
+
+    /* Ceremony subtitle */
+    .hero-ceremony {
+      font-size: clamp(17px, 3.2vw, 22px);
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      font-weight: 300;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.55s forwards;
+    }
+
+    /* Main name — fills full width, one line */
+    .hero-name {
+      font-weight: 400;
+      line-height: 1.05;
+      white-space: nowrap;
+      letter-spacing: 0px;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.68s forwards;
+    }
+
+    /* Gold rule under name */
+    .hero-rule {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 20px auto 18px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease 0.9s forwards;
+    }
+
+    /* Location — readable */
+    .hero-location {
+      font-size: clamp(14px, 2.2vw, 16px);
+      color: var(--text-muted);
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.88s forwards;
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 14px;
+      left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease 1.6s forwards;
+    }
+
+    .scroll-cue span {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold-muted);
+    }
+
+    .scroll-cue i {
+      display: block;
+      width: 1px; height: 32px;
+      background: linear-gradient(to bottom, var(--gold-muted), transparent);
+      animation: scrollPulse 2.2s ease-in-out infinite;
+    }
+
+    /* ── LOTUS DIVIDER ── */
+    .lotus-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 52px 40px 0;
+      color: var(--gold);
+      opacity: 0;
+    }
+
+    .lotus-divider.visible {
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .lotus-line {
+      flex: 1;
+      height: 1px;
+      max-width: 160px;
+      background: linear-gradient(to right, transparent, var(--gold-muted));
+    }
+
+    .lotus-line.right {
+      background: linear-gradient(to left, transparent, var(--gold-muted));
+    }
+
+    .lotus-svg {
+      width: 52px; height: 64px;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 52px 28px 100px;
+    }
+
+    /* Section header */
+    .sec-head {
+      text-align: center;
+      margin-bottom: 64px;
+      opacity: 0;
+    }
+
+    .sec-head.visible {
+      animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+
+    .sec-eyebrow {
+      font-size: 12px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .sec-title {
+      font-size: clamp(24px, 4.5vw, 30px);
+      font-weight: 400;
+    }
+
+    /* ── TIMELINE ── */
+    .timeline { display: flex; flex-direction: column; }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 56px 28px 1fr;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+        transform 0.75s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    .tl-item.visible { opacity: 1; transform: translateY(0); }
+
+    /* Date column */
+    .tl-date { text-align: right; padding-top: 2px; }
+
+    .tl-num {
+      font-size: 32px;
+      font-weight: 200;
+      line-height: 1;
+      letter-spacing: -1px;
+      color: var(--gold);
+    }
+
+    .tl-mon {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-muted);
+      margin-top: 2px;
+    }
+
+    /* Spine */
+    .tl-spine { display: flex; flex-direction: column; align-items: center; }
+
+    .tl-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold-muted);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .tl-item.special .tl-dot {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      box-shadow: 0 0 8px rgba(201,168,76,0.5);
+      margin-top: 5px;
+    }
+
+    .tl-vline {
+      flex: 1;
+      width: 1px;
+      min-height: 48px;
+      background: linear-gradient(to bottom, var(--line), rgba(201,168,76,0.02));
+    }
+
+    .tl-item:last-child .tl-vline { display: none; }
+
+    /* Content */
+    .tl-body { padding: 0 0 52px 18px; }
+    .tl-item:last-child .tl-body { padding-bottom: 0; }
+
+    /* Day name — medium-bold, most prominent in section */
+    .tl-day {
+      font-size: clamp(20px, 3.8vw, 26px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+
+    .tl-date-th {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    .tl-badge {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 1px solid var(--gold-muted);
+      padding: 3px 12px;
+      border-radius: 20px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .tl-events { display: flex; flex-direction: column; gap: 9px; }
+
+    .tl-event { display: flex; align-items: baseline; gap: 16px; }
+
+    .tl-time {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--gold-muted);
+      min-width: 50px;
+      flex-shrink: 0;
+    }
+
+    .tl-label {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(240,236,230,0.78);
+      line-height: 1.5;
+    }
+
+    .tl-item.special .tl-label {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    /* Gold divider */
+    .gold-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 64px 0;
+    }
+
+    .gold-divider::before,
+    .gold-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .gold-divider-dot {
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold-muted);
+    }
+
+    /* ── VENUE ── */
+    .venue {
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold-muted);
+      border-radius: 0 16px 16px 0;
+      padding: 28px 28px 28px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      background: var(--gold-dim);
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.75s cubic-bezier(0.16,1,0.3,1),
+        transform 0.75s cubic-bezier(0.16,1,0.3,1),
+        background 0.3s;
+    }
+
+    .venue.visible { opacity: 1; transform: translateY(0); }
+    .venue:hover   { background: rgba(201,168,76,0.08); }
+
+    .venue-eye {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .venue-name {
+      font-size: clamp(18px, 3.5vw, 22px);
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+
+    .venue-addr {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    .map-btn {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--gold-muted);
+      color: var(--gold);
+      padding: 11px 22px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-family: 'Prompt', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .map-btn:hover { background: var(--gold); color: var(--bg); }
+    .map-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 48px 24px 64px;
+      border-top: 1px solid var(--line);
+    }
+
+    .footer-lotus {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 20px;
+      color: var(--gold);
+    }
+
+    .footer-lotus-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold-muted));
+    }
+
+    .footer-lotus-line.right {
+      background: linear-gradient(to left, transparent, var(--gold-muted));
+    }
+
+    .footer-lotus svg { width: 36px; height: 44px; }
+
+    footer p {
+      font-size: 16px;
+      color: rgba(240,236,230,0.3);
+      letter-spacing: 1px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.8; transform: scaleY(1); }
+      50%       { opacity: 0.2; transform: scaleY(0.6); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 480px) {
+      .tl-item { grid-template-columns: 46px 22px 1fr; }
+      .tl-num  { font-size: 26px; }
+      .venue   { flex-direction: column; align-items: flex-start; }
+      .map-btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="ภาพ คุณพ่อทม.jpg" alt="คุณพ่อทม พลายละหาร" class="hero-photo">
+    <div class="hero-overlay"></div>
+    <div class="hero-glow"></div>
+
+    <div class="hero-content">
+      <p class="hero-label">กำหนดการ</p>
+      <p class="hero-ceremony">พิธีสวดพระอภิธรรมและพิธีพระราชทานเพลิงศพ</p>
+      <h1 class="hero-name">คุณพ่อทม พลายละหาร</h1>
+      <div class="hero-rule"></div>
+      <p class="hero-location">
+        ณ ศาลามงคลธีรานุสรณ์ วัดหน้าพระบรมธาตุ<br>
+        ตำบลในเมือง อำเภอเมืองนครศรีธรรมราช<br>
+        จังหวัดนครศรีธรรมราช
+      </p>
+    </div>
+  </section>
+
+  <!-- LOTUS DIVIDER -->
+  <div class="lotus-divider" id="lotusDivider">
+    <div class="lotus-line"></div>
+    <!-- Lotus SVG -->
+    <svg class="lotus-svg" viewBox="0 0 52 64" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M26 62 L26 46" stroke-width="0.8" opacity="0.35"/>
+      <path d="M26 52 Q16 54 12 44 Q22 47 26 52Z" stroke-width="0.7" opacity="0.4"/>
+      <path d="M26 52 Q36 54 40 44 Q30 47 26 52Z" stroke-width="0.7" opacity="0.4"/>
+      <path d="M26 46 Q18 32 26 10 Q34 32 26 46Z" stroke-width="0.9" opacity="0.72"/>
+      <path d="M26 43 Q12 36 14 14 Q24 30 26 43Z" stroke-width="0.75" opacity="0.58"/>
+      <path d="M26 43 Q40 36 38 14 Q28 30 26 43Z" stroke-width="0.75" opacity="0.58"/>
+      <path d="M26 40 Q6 36 6 10 Q22 28 26 40Z" stroke-width="0.65" opacity="0.38"/>
+      <path d="M26 40 Q46 36 46 10 Q30 28 26 40Z" stroke-width="0.65" opacity="0.38"/>
+    </svg>
+    <div class="lotus-line right"></div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <main class="main">
+
+    <div class="sec-head" id="secHead">
+      <h2 class="sec-title">ลำดับพิธี</h2>
+    </div>
+
+    <div class="timeline">
+
+      <!-- 11 May -->
+      <div class="tl-item" data-delay="0">
+        <div class="tl-date">
+          <div class="tl-num">11</div>
+          <div class="tl-mon">May</div>
+        </div>
+        <div class="tl-spine">
+          <div class="tl-dot"></div>
+          <div class="tl-vline"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-day">วันจันทร์</div>
+          <div class="tl-date-th">11 พฤษภาคม 2569</div>
+          <div class="tl-events">
+            <div class="tl-event">
+              <span class="tl-time">16.30</span>
+              <span class="tl-label">พิธีรดน้ำศพ</span>
+            </div>
+            <div class="tl-event">
+              <span class="tl-time">18.00</span>
+              <span class="tl-label">พิธีสวดพระอภิธรรม</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12 May -->
+      <div class="tl-item" data-delay="90">
+        <div class="tl-date">
+          <div class="tl-num">12</div>
+          <div class="tl-mon">May</div>
+        </div>
+        <div class="tl-spine">
+          <div class="tl-dot"></div>
+          <div class="tl-vline"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-day">วันอังคาร</div>
+          <div class="tl-date-th">12 พฤษภาคม 2569</div>
+          <div class="tl-events">
+            <div class="tl-event">
+              <span class="tl-time">18.00</span>
+              <span class="tl-label">พิธีสวดพระอภิธรรม</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13 May -->
+      <div class="tl-item" data-delay="180">
+        <div class="tl-date">
+          <div class="tl-num">13</div>
+          <div class="tl-mon">May</div>
+        </div>
+        <div class="tl-spine">
+          <div class="tl-dot"></div>
+          <div class="tl-vline"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-day">วันพุธ</div>
+          <div class="tl-date-th">13 พฤษภาคม 2569</div>
+          <div class="tl-events">
+            <div class="tl-event">
+              <span class="tl-time">18.00</span>
+              <span class="tl-label">พิธีสวดพระอภิธรรม</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14 May — special -->
+      <div class="tl-item special" data-delay="270">
+        <div class="tl-date">
+          <div class="tl-num">14</div>
+          <div class="tl-mon">May</div>
+        </div>
+        <div class="tl-spine">
+          <div class="tl-dot"></div>
+          <div class="tl-vline"></div>
+        </div>
+        <div class="tl-body">
+          <div class="tl-day">วันพฤหัสบดี</div>
+          <div class="tl-date-th">14 พฤษภาคม 2569</div>
+          <div class="tl-events">
+            <div class="tl-event">
+              <span class="tl-time">16.00</span>
+              <span class="tl-label">พิธีพระราชทานเพลิงศพ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /timeline -->
+
+    <!-- Gold dot divider -->
+    <div class="gold-divider">
+      <div class="gold-divider-dot"></div>
+      <div class="gold-divider-dot"></div>
+      <div class="gold-divider-dot"></div>
+    </div>
+
+    <!-- VENUE -->
+    <div class="venue" id="venueCard">
+      <div>
+        <p class="venue-name">วัดหน้าพระบรมธาตุ</p>
+        <p class="venue-addr">ณ ศาลามงคลธีรานุสรณ์ วัดหน้าพระบรมธาตุ<br>ตำบลในเมือง อำเภอเมืองนครศรีธรรมราช<br>จังหวัดนครศรีธรรมราช</p>
+      </div>
+      <a class="map-btn" href="https://maps.app.goo.gl/sHvARPuijiyiTpyg9" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        ดูแผนที่
+      </a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-lotus">
+      <div class="footer-lotus-line"></div>
+      <svg viewBox="0 0 52 64" fill="none" stroke="currentColor" stroke-linecap="round">
+        <path d="M26 62 L26 46" stroke-width="0.8" opacity="0.35"/>
+        <path d="M26 52 Q16 54 12 44 Q22 47 26 52Z" stroke-width="0.7" opacity="0.4"/>
+        <path d="M26 52 Q36 54 40 44 Q30 47 26 52Z" stroke-width="0.7" opacity="0.4"/>
+        <path d="M26 46 Q18 32 26 10 Q34 32 26 46Z" stroke-width="0.9" opacity="0.72"/>
+        <path d="M26 43 Q12 36 14 14 Q24 30 26 43Z" stroke-width="0.75" opacity="0.58"/>
+        <path d="M26 43 Q40 36 38 14 Q28 30 26 43Z" stroke-width="0.75" opacity="0.58"/>
+        <path d="M26 40 Q6 36 6 10 Q22 28 26 40Z" stroke-width="0.65" opacity="0.38"/>
+        <path d="M26 40 Q46 36 46 10 Q30 28 26 40Z" stroke-width="0.65" opacity="0.38"/>
+      </svg>
+      <div class="footer-lotus-line right"></div>
+    </div>
+  </footer>
+
+  <script>
+    // Auto-fit hero name to full width on one line
+    function fitHeroName() {
+      const el = document.querySelector('.hero-name');
+      const pw = el.parentElement.clientWidth;
+      el.style.fontSize = '120px';
+      while (el.scrollWidth > pw && parseFloat(el.style.fontSize) > 20) {
+        el.style.fontSize = (parseFloat(el.style.fontSize) - 1) + 'px';
+      }
+    }
+    fitHeroName();
+    window.addEventListener('resize', fitHeroName);
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target;
+          setTimeout(() => el.classList.add('visible'), parseInt(el.dataset.delay || 0));
+          io.unobserve(el);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.tl-item').forEach(el => io.observe(el));
+    io.observe(document.getElementById('venueCard'));
+
+    const headEl = document.getElementById('secHead');
+    const headIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { headEl.classList.add('visible'); headIO.unobserve(headEl); }
+      });
+    }, { threshold: 0.3 });
+    headIO.observe(headEl);
+
+    const lotusEl = document.getElementById('lotusDivider');
+    const lotusIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { lotusEl.classList.add('visible'); lotusIO.unobserve(lotusEl); }
+      });
+    }, { threshold: 0.5 });
+    lotusIO.observe(lotusEl);
+  </script>
+
+</body>
+</html>
